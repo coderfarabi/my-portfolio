@@ -1,40 +1,164 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/create-next-app).
+# Portfolio
 
-## Getting Started
+A portfolio website built with Next.js 15 (App Router), TypeScript, Tailwind CSS v4, and Firebase Firestore.
 
-First, run the development server:
+## Tech Stack
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- **Framework**: Next.js 15 (App Router)
+- **Language**: TypeScript (strict-mode, zero `any` usage)
+- **Validation**: Zod (for environment variables, request bodies, query/route parameters)
+- **Database**: Firebase Firestore
+- **Version Control & Repository Data**: GitHub GraphQL API
+- **Styling**: Tailwind CSS v4
+
+## Architecture
+
+```
+src/
+├── app/
+│   ├── page.tsx           # Main portfolio page
+│   ├── layout.tsx         # Root layout
+│   ├── globals.css        # Tailwind CSS v4 + custom theme tokens
+│   └── api/              # API route handlers (force-dynamic)
+│       ├── about/
+│       ├── contact/
+│       ├── contact-info/
+│       ├── education/
+│       ├── experience/
+│       ├── github/
+│       ├── hero/
+│       ├── newsletter/
+│       ├── projects/
+│       ├── skills/
+│       └── social-links/
+├── components/           # React frontend components
+│   ├── Header.tsx
+│   ├── HeroSection.tsx
+│   ├── AboutSection.tsx
+│   ├── SkillsSection.tsx
+│   ├── ExperienceSection.tsx
+│   ├── EducationSection.tsx
+│   ├── ProjectsSection.tsx
+│   ├── ContactSection.tsx
+│   ├── NewsletterSection.tsx
+│   └── Footer.tsx
+├── config/
+│   └── env.ts            # Zod env validation
+├── lib/
+│   ├── api-error.ts      # Custom exception class
+│   ├── api-response.ts   # Standard JSON wrappers
+│   ├── catch-async.ts    # Async error handling decorator
+│   ├── firebase.ts       # Lazy Firestore singleton
+│   ├── github.ts         # GitHub GraphQL query client
+│   └── api.ts            # Client-side API fetcher
+└── modules/              # Feature modules (types, schema, repository, service, controller)
+    ├── about/
+    ├── contact/
+    ├── education/
+    ├── experience/
+    ├── github/
+    ├── hero/
+    ├── newsletter/
+    ├── projects/
+    ├── skills/
+    └── social-links/
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Key Features
 
-You can start editing the page by modifying `app/route.ts`. The page auto-updates as you edit the file.
+### Environment Validation (`src/config/env.ts`)
+- Validates environment variables using Zod schemas at startup
+- Safe-fails with clear error messages if keys are missing
+- Variables: `NODE_ENV`, `PORT`, `GITHUB_PAT`, `FIREBASE_PROJECT_ID`, `FIREBASE_CLIENT_EMAIL`, `FIREBASE_PRIVATE_KEY`
 
-## Learn More
+### Standardized API Responses
+All API responses follow a consistent format:
 
-To learn more about Next.js, take a look at the following resources:
+**Success:**
+```json
+{
+  "success": true,
+  "message": "Success message",
+  "data": { ... },
+  "meta": { "count": 1 },
+  "timestamp": "2026-07-20T20:32:15.000Z"
+}
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+**Error:**
+```json
+{
+  "success": false,
+  "message": "Validation failed",
+  "error": { ... },
+  "statusCode": 400,
+  "timestamp": "2026-07-20T20:32:15.000Z"
+}
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Async Interceptor
+Route handlers are wrapped with `catchAsync()` to auto-handle all rejections.
 
-## Deploy on Vercel
+### Lazy Firebase Initializer
+Firebase is initialized lazily when a route starts execution, bypassing static pre-generation errors on Vercel with dummy env variables.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### GitHub GraphQL Wrapper
+Configures a cacheable GraphQL client using React Cache to fetch repositories cleanly.
 
 ## API Routes
 
-This directory contains example API routes for the headless API app.
+| Route | Method | Description |
+|---|---|---|
+| `/api/hero` | GET | Hero section (greeting, name, CTAs) |
+| `/api/about` | GET | About section with bio and stats |
+| `/api/skills` | GET | Skills grouped by category, sorted by level |
+| `/api/experience` | GET | Work experience sorted by date |
+| `/api/education` | GET | Education history sorted by date |
+| `/api/projects` | GET | Projects with GitHub stats merged |
+| `/api/github` | GET | Pinned GitHub repositories |
+| `/api/contact-info` | GET | Contact details from Firestore |
+| `/api/social-links` | GET | Social media links |
+| `/api/contact` | POST | Submit a contact message (saved to `contact-messages`) |
+| `/api/newsletter` | POST | Subscribe to newsletter (returns `409` on duplicates) |
 
-For more details, see [route.js file convention](https://nextjs.org/docs/app/api-reference/file-conventions/route).
+## Getting Started
+
+### Prerequisites
+- Node.js 18+
+- A Firebase project with Firestore enabled
+- A GitHub Personal Access Token
+
+### Setup
+
+1. Clone and install dependencies:
+```bash
+npm install
+```
+
+2. Create a `.env.local` file:
+```env
+GITHUB_PAT=your_github_pat
+FIREBASE_PROJECT_ID=your_project_id
+FIREBASE_CLIENT_EMAIL=your_service_account_email
+FIREBASE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----"
+```
+
+3. Download your Firebase service account key from **Project Settings > Service Accounts > Generate New Private Key** and save it as `serviceAccountKey.json` in the project root.
+
+4. Seed the database:
+```bash
+node seed.js
+```
+
+5. Start the dev server:
+```bash
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+## Build
+
+```bash
+npm run build
+```
