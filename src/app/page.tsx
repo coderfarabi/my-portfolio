@@ -15,6 +15,7 @@ import BlogSection from "@/components/BlogSection";
 import ContactSection from "@/components/ContactSection";
 import NewsletterSection from "@/components/NewsletterSection";
 import Footer from "@/components/Footer";
+import SocialSidebar from "@/components/SocialSidebar";
 
 export default function Home() {
   const [config, setConfig] = useState<SectionsConfigData | null>(null);
@@ -28,6 +29,7 @@ export default function Home() {
   return (
     <>
       <Header />
+      <SocialSidebar />
       <main>
         {show("hero") && <HeroSection />}
         {show("about") && <AboutSection />}
