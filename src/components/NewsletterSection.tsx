@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import { motion } from "framer-motion";
 
 export default function NewsletterSection() {
   const [email, setEmail] = useState("");
@@ -22,7 +23,7 @@ export default function NewsletterSection() {
 
       if (res.status === 409) {
         setStatus("duplicate");
-        setMessage("You're already subscribed!");
+        setMessage("You are already subscribed to the newsletter.");
         return;
       }
 
@@ -32,61 +33,75 @@ export default function NewsletterSection() {
       }
 
       setStatus("success");
-      setMessage("Thanks for subscribing!");
+      setMessage("Thank you for subscribing!");
       setEmail("");
     } catch (err) {
       setStatus("error");
       setMessage(
-        err instanceof Error ? err.message : "Something went wrong",
+        err instanceof Error ? err.message : "Something went wrong"
       );
     }
   }
 
   return (
-    <section className="py-24 sm:py-32">
-      <div className="mx-auto max-w-6xl px-6">
-        <div className="max-w-xl mx-auto bg-gradient-to-br from-accent-dim/10 to-transparent border border-accent/20 rounded-3xl p-8 sm:p-12 text-center">
-          <h2 className="text-2xl sm:text-3xl font-display font-bold mb-3">
-            Stay Updated
+    <section id="newsletter" className="section-wrapper border-t border-[var(--color-border)] bg-[var(--color-bg)]">
+      <div className="container-wide">
+        
+        {/* Newsletter Centered Card */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.6 }}
+          className="max-w-2xl mx-auto card-base p-8 md:p-12 text-center flex flex-col items-center"
+        >
+          <span className="text-[var(--color-text-muted)] font-mono text-[10px] uppercase tracking-widest block mb-4">
+            Newsletter
+          </span>
+          
+          <h2 className="text-2xl md:text-3xl font-display font-bold uppercase tracking-wide text-[var(--color-text)] mb-3">
+            Stay in the <span className="text-[var(--color-accent)]">Loop</span>
           </h2>
-          <p className="text-text-secondary text-sm mb-6">
-            Get notified about new projects and articles.
+          
+          <p className="text-sm text-[var(--color-text-secondary)] font-light mb-8 max-w-sm leading-relaxed">
+            Get regular notifications on release updates, technical articles, and fresh interface design trends.
           </p>
 
-          <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+          <form onSubmit={handleSubmit} className="w-full max-w-md flex flex-col sm:flex-row gap-3">
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter your email"
+              placeholder="name@email.com"
               required
-              className="flex-1 px-4 py-2.5 bg-bg border border-border rounded-xl text-sm text-text placeholder:text-text-muted focus:outline-none focus:border-accent transition-colors"
+              className="flex-1 px-4 py-3 bg-[var(--color-surface-2)] border border-[var(--color-border)] rounded-xl text-sm text-[var(--color-text)] placeholder-[var(--color-text-muted)] focus:outline-none focus:border-[var(--color-accent)] transition-colors"
             />
             <button
               type="submit"
               disabled={status === "loading"}
-              className="px-6 py-2.5 bg-accent text-bg font-medium rounded-xl hover:bg-accent-hover transition-colors text-sm disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+              className="btn-primary justify-center cursor-pointer disabled:opacity-50"
             >
               {status === "loading" ? "Subscribing..." : "Subscribe"}
             </button>
           </form>
 
           {message && (
-            <p
-              className={`mt-4 text-sm ${
+            <motion.p
+              initial={{ opacity: 0, y: 5 }}
+              animate={{ opacity: 1, y: 0 }}
+              className={`mt-4 text-xs font-mono uppercase tracking-wide ${
                 status === "success"
-                  ? "text-success"
+                  ? "text-[var(--color-accent)]"
                   : status === "duplicate"
-                    ? "text-accent"
-                    : status === "error"
-                      ? "text-error"
-                      : ""
+                    ? "text-[var(--color-text-secondary)]"
+                    : "text-[var(--color-error)]"
               }`}
             >
               {message}
-            </p>
+            </motion.p>
           )}
-        </div>
+        </motion.div>
+
       </div>
     </section>
   );
