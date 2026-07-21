@@ -106,10 +106,8 @@ interface ApiResponse<T> {
   message?: string;
 }
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
-
 async function fetchApi<T>(endpoint: string): Promise<T> {
-  const res = await fetch(`${BASE_URL}${endpoint}`, { cache: "no-store" });
+  const res = await fetch(endpoint, { cache: "no-store" });
   if (!res.ok) throw new Error(`API ${endpoint} failed: ${res.status}`);
   const json: ApiResponse<T> = await res.json();
   if (!json.success) throw new Error(json.message || `API ${endpoint} failed`);
