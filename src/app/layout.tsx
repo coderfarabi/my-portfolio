@@ -15,7 +15,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark" suppressHydrationWarning>
-      <body className="antialiased">
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "new MutationObserver(function(){document.querySelectorAll('[fdprocessedid]').forEach(function(e){e.removeAttribute('fdprocessedid')})}).observe(document.documentElement,{attributes:true,subtree:true,childList:true,attributeFilter:['fdprocessedid']})",
+          }}
+        />
+      </head>
+      <body className="antialiased" suppressHydrationWarning>
         <SiteHead />
         <CustomCursor />
         {children}

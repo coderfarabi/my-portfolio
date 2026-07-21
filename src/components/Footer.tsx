@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { getSocialLinks, type SocialLinkData } from "@/lib/api";
+import { getHero, getSocialLinks, type HeroData, type SocialLinkData } from "@/lib/api";
 import { PLATFORM_ICONS } from "@/lib/constants";
 
 const NAV_ITEMS = [
@@ -12,11 +12,15 @@ const NAV_ITEMS = [
 ];
 
 export default function Footer() {
+  const [hero, setHero] = useState<HeroData | null>(null);
   const [socialLinks, setSocialLinks] = useState<SocialLinkData[]>([]);
 
   useEffect(() => {
+    getHero().then(setHero).catch(() => {});
     getSocialLinks().then(setSocialLinks).catch((err) => console.error("Error loading socials:", err));
   }, []);
+
+  const brandName = hero?.brandName || "Port";
 
   return (
     <footer className="border-t border-[var(--color-border)] bg-[var(--color-bg)]">
@@ -29,7 +33,7 @@ export default function Footer() {
           <div className="md:col-span-5 flex flex-col gap-4">
             <a href="#hero" className="flex items-center gap-1.5 w-fit group">
               <span className="font-display text-xl font-bold uppercase text-[var(--color-text)] group-hover:text-[var(--color-accent)] transition-colors duration-200">
-                Port
+                {brandName}
               </span>
               <span className="accent-dot group-hover:scale-125 transition-transform duration-200" />
             </a>
@@ -94,7 +98,7 @@ export default function Footer() {
         {/* Footer Bottom */}
         <div className="pt-8 border-t border-[var(--color-border)] flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-xs text-[var(--color-text-muted)] font-mono uppercase tracking-wider">
-            &copy; {new Date().getFullYear()} Port. All rights reserved.
+            &copy; {new Date().getFullYear()} {brandName}. All rights reserved.
           </p>
           
           <button

@@ -318,6 +318,21 @@ body {
 }
 .scrollbar-hide::-webkit-scrollbar { display: none; }
 
+/* Profile image punch-hole ring */
+.profile-punch {
+  position: relative;
+  isolation: isolate;
+}
+
+.profile-punch::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  background: var(--color-bg);
+  z-index: -1;
+}
+
 /* ============================================
    CUSTOM CURSOR
    ============================================ */
