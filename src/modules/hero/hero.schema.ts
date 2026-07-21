@@ -11,6 +11,10 @@ export const HeroSchema = z.object({
   ctaSecondaryLabel: z.string().min(1, "Secondary CTA label is required"),
   ctaSecondaryUrl: z.string().url("Secondary CTA URL must be a valid URL"),
   highlightedWords: z.array(z.string()).optional().default([]),
+  siteTitle: z.string().optional(),
+  faviconUrl: z.string().optional(),
+  brandName: z.string().optional(),
+  cursorEnabled: z.boolean().optional(),
 });
 
 export type HeroInput = z.infer<typeof HeroSchema>;

@@ -9,4 +9,8 @@ export interface Hero {
   ctaSecondaryLabel: string;
   ctaSecondaryUrl: string;
   highlightedWords?: string[];
+  siteTitle?: string;
+  faviconUrl?: string;
+  brandName?: string;
+  cursorEnabled?: boolean;
 }

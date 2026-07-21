@@ -8,6 +8,10 @@ export interface HeroData {
   ctaSecondaryLabel: string;
   ctaSecondaryUrl: string;
   highlightedWords?: string[];
+  siteTitle?: string;
+  faviconUrl?: string;
+  brandName?: string;
+  cursorEnabled?: boolean;
 }
 
 export interface AboutData {
@@ -145,3 +149,48 @@ export function getContactInfo() {
 export function getSocialLinks() {
   return fetchApi<SocialLinkData[]>("/api/social-links");
 }
+
+export interface TestimonialData {
+  id?: string;
+  quote: string;
+  author: string;
+  role: string;
+  rating: number;
+}
+
+export function getTestimonials() {
+  return fetchApi<TestimonialData[]>("/api/testimonials");
+}
+
+export interface FAQData {
+  id?: string;
+  question: string;
+  answer: string;
+}
+
+export function getFAQ() {
+  return fetchApi<FAQData[]>("/api/faq");
+}
+
+export interface BlogPostData {
+  id?: string;
+  category: string;
+  date: string;
+  title: string;
+  excerpt: string;
+  slug: string;
+}
+
+export function getBlogPosts() {
+  return fetchApi<BlogPostData[]>("/api/blog");
+}
+
+export interface SectionsConfigData {
+  sections: Record<string, boolean>;
+}
+
+export function getSectionsConfig() {
+  return fetchApi<SectionsConfigData>("/api/sections-config");
+}
+
+

@@ -1,3 +1,7 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import { getSectionsConfig, type SectionsConfigData } from "@/lib/api";
 import Header from "@/components/Header";
 import HeroSection from "@/components/HeroSection";
 import AboutSection from "@/components/AboutSection";
@@ -13,23 +17,31 @@ import NewsletterSection from "@/components/NewsletterSection";
 import Footer from "@/components/Footer";
 
 export default function Home() {
+  const [config, setConfig] = useState<SectionsConfigData | null>(null);
+
+  useEffect(() => {
+    getSectionsConfig().then(setConfig).catch(() => {});
+  }, []);
+
+  const show = (key: string) => config?.sections?.[key] !== false;
+
   return (
     <>
       <Header />
       <main>
-        <HeroSection />
-        <AboutSection />
-        <ServicesSection />
-        <ExperienceSection />
-        <EducationSection />
-        <ProjectsSection />
-        <TestimonialsSection />
-        <FAQSection />
-        <BlogSection />
-        <ContactSection />
-        <NewsletterSection />
+        {show("hero") && <HeroSection />}
+        {show("about") && <AboutSection />}
+        {show("services") && <ServicesSection />}
+        {show("experience") && <ExperienceSection />}
+        {show("education") && <EducationSection />}
+        {show("projects-metadata") && <ProjectsSection />}
+        {show("testimonials") && <TestimonialsSection />}
+        {show("faq") && <FAQSection />}
+        {show("blog") && <BlogSection />}
+        {show("contact-info") && <ContactSection />}
+        {show("newsletter") && <NewsletterSection />}
       </main>
-      <Footer />
+      {show("footer") && <Footer />}
     </>
   );
 }

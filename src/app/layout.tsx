@@ -1,21 +1,25 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import SiteHead from "@/components/SiteHead";
+import CustomCursor from "@/components/CustomCursor";
 
 export const metadata: Metadata = {
-  title: "Portfolio — Full-Stack Developer & Designer",
-  description: "Creative developer building beautiful, high-performance digital experiences.",
+  title: "Portfolio",
+  description: "Software engineer & full-stack developer portfolio",
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{ children: React.ReactNode }>) {
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
   return (
-    <html lang="en">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-      </head>
-      <body className="antialiased">{children}</body>
+    <html lang="en" className="dark" suppressHydrationWarning>
+      <body className="antialiased">
+        <SiteHead />
+        <CustomCursor />
+        {children}
+      </body>
     </html>
   );
 }

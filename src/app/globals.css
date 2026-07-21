@@ -317,3 +317,14 @@ body {
   scrollbar-width: none;
 }
 .scrollbar-hide::-webkit-scrollbar { display: none; }
+
+/* ============================================
+   CUSTOM CURSOR
+   ============================================ */
+.cursor-hidden {
+  cursor: none;
+}
+
+.cursor-hidden * {
+  cursor: none;
+}
