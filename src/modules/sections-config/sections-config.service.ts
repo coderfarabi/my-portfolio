@@ -10,5 +10,5 @@ export const getSectionsConfig = async (): Promise<SectionsConfig> => {
     console.error("SectionsConfig validation failed:", parsed.error.format());
   }
 
-  return raw;
+  return parsed.data!;
 };

@@ -1,23 +1,36 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useRef, useState, useEffect } from "react";
+import Image from "next/image";
 import { motion } from "framer-motion";
-import { getHero, getAbout, type HeroData, type AboutData } from "@/lib/api";
+import { usePortfolioData } from "@/context/DataContext";
+import type { TechnologyItemData } from "@/lib/api";
+
+function normalizeTechnologies(tech: unknown): TechnologyItemData[] {
+  if (Array.isArray(tech)) return tech;
+  if (typeof tech === "string") {
+    if (tech.startsWith("[")) {
+      try {
+        const parsed = JSON.parse(tech);
+        if (Array.isArray(parsed)) return parsed;
+      } catch { }
+    }
+    return tech.split(", ").filter(Boolean).map((name) => ({ name }));
+  }
+  return [];
+}
 
 export default function HeroSection() {
-  const [hero, setHero] = useState<HeroData | null>(null);
-  const [about, setAbout] = useState<AboutData | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { hero, about, services, loading } = usePortfolioData();
+  const marqueeRef = useRef<HTMLDivElement>(null);
+  const [marqueeDuration, setMarqueeDuration] = useState(30);
 
   useEffect(() => {
-    Promise.all([getHero(), getAbout()])
-      .then(([h, a]) => {
-        setHero(h);
-        setAbout(a);
-      })
-      .catch((err) => console.error("Error loading hero/about data:", err))
-      .finally(() => setLoading(false));
-  }, []);
+    if (!marqueeRef.current) return;
+    const totalWidth = marqueeRef.current.scrollWidth;
+    const halfWidth = totalWidth / 2;
+    setMarqueeDuration(Math.max(4, halfWidth / 2000));
+  }, [services]);
 
   if (loading) {
     return (
@@ -34,14 +47,12 @@ export default function HeroSection() {
       id="hero"
       className="relative min-h-screen flex flex-col justify-between overflow-hidden pt-24 md:pt-32 pb-12 bg-[var(--color-bg)]"
     >
-      {/* Decorative Grid Lines / Shadows */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(208,255,113,0.07),transparent)] pointer-events-none" />
       <div className="absolute top-1/4 left-10 size-[300px] bg-[var(--color-accent)]/2 rounded-full blur-3xl pointer-events-none" />
-      
+
       <div className="relative z-10 mx-auto max-w-6xl px-6 w-full my-auto">
         <div className="grid lg:grid-cols-12 gap-12 lg:gap-8 items-center">
-          
-          {/* Main Info Column */}
+
           <div className="lg:col-span-7 flex flex-col gap-6">
             <motion.div
               initial={{ opacity: 0, y: 15 }}
@@ -97,7 +108,6 @@ export default function HeroSection() {
             </motion.div>
           </div>
 
-          {/* Profile Card Column */}
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -105,28 +115,21 @@ export default function HeroSection() {
             className="lg:col-span-5 flex flex-col items-center lg:items-end"
           >
             <div className="relative group w-full max-w-[340px]">
-              {/* Decorative Frame */}
               <div className="absolute inset-0 border border-[var(--color-accent)] rounded-3xl translate-x-3 translate-y-3 -z-10 transition-transform duration-300 group-hover:translate-x-1.5 group-hover:translate-y-1.5" />
-              
-              {/* Main Avatar Container */}
+
               <div className="aspect-[4/5] w-full rounded-3xl overflow-hidden border border-[var(--color-border)] bg-[var(--color-surface)] relative">
                 {about?.avatarUrl ? (
-                  <img
+                  <Image
                     src={about.avatarUrl}
-                    alt={about.name}
-                    className="size-full object-cover grayscale contrast-110 hover:grayscale-0 transition-all duration-500"
+                    alt={hero.name}
+                    fill
+                    priority
+                    sizes="(max-width: 1024px) 100vw, 340px"
+                    className="object-cover grayscale contrast-110 hover:grayscale-0 transition-all duration-500"
                   />
                 ) : (
                   <div className="size-full flex items-center justify-center bg-[var(--color-surface-2)] text-[var(--color-text-muted)] font-display text-7xl">
                     P
-                  </div>
-                )}
-                
-                {/* Available Badge */}
-                {about?.openToWork && (
-                  <div className="absolute top-4 left-4 px-3 py-1.5 bg-black/70 border border-[var(--color-border-light)] rounded-full flex items-center gap-2 backdrop-blur-md">
-                    <span className="size-2 rounded-full bg-[var(--color-accent)] animate-pulse" />
-                    <span className="text-[10px] font-mono tracking-widest text-[var(--color-text)] uppercase">Available</span>
                   </div>
                 )}
               </div>
@@ -136,21 +139,47 @@ export default function HeroSection() {
         </div>
       </div>
 
-      {/* Marquee Ticker at the bottom */}
       <div className="w-full overflow-hidden border-y border-[var(--color-border)] py-6 mt-16 bg-[var(--color-surface)] relative">
-        <div className="flex gap-16 whitespace-nowrap animate-marquee">
-          {Array(4).fill([
-            "UI/UX DESIGN",
-            "WEB DEVELOPMENT",
-            "CREATIVE TECH",
-            "INTERFACE ENGINEERING",
-            "BRAND DESIGN"
-          ]).flat().map((item, index) => (
-            <div key={index} className="flex items-center gap-4 text-xs font-mono tracking-widest text-[var(--color-text-muted)]">
-              <span>{item}</span>
-              <span className="accent-dot" />
-            </div>
-          ))}
+        <div ref={marqueeRef} className="flex gap-16 whitespace-nowrap animate-marquee" style={{ animationDuration: `${marqueeDuration}s` }}>
+          {(() => {
+            const techs = services?.services
+              ? services.services.flatMap((s) => normalizeTechnologies(s.technologies))
+              : [];
+            return Array(4).fill(techs).flat().map((tech, index) => {
+              let hostname = "";
+              if (tech.url) {
+                try { hostname = new URL(tech.url).hostname; } catch { }
+              }
+              const content = (
+                <>
+                  {hostname && (
+                    <img
+                      src={`https://www.google.com/s2/favicons?domain=${hostname}&sz=64`}
+                      alt={tech.name}
+                      width={40}
+                      height={40}
+                      loading="lazy"
+                      className="rounded-sm shrink-0"
+                    />
+                  )}
+                  <span>{tech.name}</span>
+                </>
+              );
+              const className = "flex items-center gap-3 text-xs font-mono tracking-widest text-[var(--color-text-muted)] hover:text-[var(--color-accent)] transition-colors";
+              return (
+                <span key={index} className="flex items-center gap-16">
+                  {tech.url ? (
+                    <a href={tech.url} target="_blank" rel="noopener noreferrer" className={className}>
+                      {content}
+                    </a>
+                  ) : (
+                    <span className={className}>{content}</span>
+                  )}
+                  <span className="accent-dot" />
+                </span>
+              );
+            });
+          })()}
         </div>
       </div>
     </section>

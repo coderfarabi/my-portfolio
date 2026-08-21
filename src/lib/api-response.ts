@@ -44,7 +44,9 @@ export class ApiResponse {
       {
         success: false,
         message,
-        error: error instanceof Error ? { message: error.message, stack: error.stack } : error,
+        error: error instanceof Error
+          ? { message: error.message, ...(process.env.NODE_ENV === "development" && { stack: error.stack }) }
+          : error,
         statusCode,
         timestamp: new Date().toISOString(),
       },

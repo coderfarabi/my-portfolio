@@ -1,19 +1,19 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { getEducation, type EducationData } from "@/lib/api";
+import { usePortfolioData } from "@/context/DataContext";
+
+function formatDate(iso: string): string {
+  if (iso === "Present") return "Present";
+  const date = new Date(iso);
+  if (isNaN(date.getTime())) return iso;
+  return date.toLocaleDateString("en-US", {
+    year: "numeric",
+  });
+}
 
 export default function EducationSection() {
-  const [education, setEducation] = useState<EducationData[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    getEducation()
-      .then(setEducation)
-      .catch((err) => console.error("Error loading education:", err))
-      .finally(() => setLoading(false));
-  }, []);
+  const { education, loading } = usePortfolioData();
 
   if (loading) {
     return (
@@ -31,7 +31,6 @@ export default function EducationSection() {
     <section id="education" className="section-wrapper border-t border-[var(--color-border)] bg-[var(--color-bg)]">
       <div className="container-wide">
         
-        {/* Section Header */}
         <div className="mb-16 md:mb-24 flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div>
             <p className="section-label mb-4">Academics</p>
@@ -39,12 +38,11 @@ export default function EducationSection() {
               Education <span className="text-[var(--color-accent)]">History</span>
             </h2>
           </div>
-          <p className="text-[var(--color-text-secondary)] font-light max-w-sm leading-relaxed text-sm md:text-base">
+          <p className="text-[var(--color-text-secondary)] font-light max-w-sm leading-relaxed text-sm md:text-base min-h-[3rem]">
             Formal education, academic research focus areas, and institutional activities.
           </p>
         </div>
 
-        {/* Education Grid */}
         <div className="grid md:grid-cols-2 gap-6 max-w-5xl mx-auto">
           {education.map((edu, index) => {
             const num = String(index + 1).padStart(2, "0");
@@ -122,12 +120,4 @@ export default function EducationSection() {
       </div>
     </section>
   );
-}
-
-function formatDate(iso: string): string {
-  const date = new Date(iso);
-  return date.toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "short",
-  });
 }

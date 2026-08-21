@@ -1,5 +1,6 @@
 import { fetchPinnedRepositories } from "./github.repository";
 import { RepositoryDetailsListSchema } from "./github.schema";
+import { env } from "@/config/env";
 import { db } from "@/lib/firebase";
 import type { RepositoryDetails } from "./github.types";
 
@@ -7,8 +8,8 @@ const SETTINGS_COLLECTION = "site-settings";
 const SETTINGS_DOC = "main";
 
 export const getPinnedRepositories = async (limit = 6): Promise<RepositoryDetails[]> => {
-  // 1. Fetch GitHub username from site settings in Firestore
-  let username = "aarfan-sayeed"; // Default fallback
+  // 1. Fetch GitHub username from site settings in Firestore, fallback to env
+  let username = env.GITHUB_USERNAME;
   try {
     const settings = await db().collection(SETTINGS_COLLECTION).doc(SETTINGS_DOC).get();
     if (settings.exists) {
@@ -18,7 +19,7 @@ export const getPinnedRepositories = async (limit = 6): Promise<RepositoryDetail
       }
     }
   } catch (error) {
-    console.warn("Failed to fetch githubUsername from site-settings, using fallback:", error);
+    console.warn("Failed to fetch githubUsername from site-settings, using env fallback:", error);
   }
 
   // 2. Fetch from GitHub API
@@ -30,5 +31,5 @@ export const getPinnedRepositories = async (limit = 6): Promise<RepositoryDetail
     console.error("GitHub repositories validation errors:", parsed.error.format());
   }
 
-  return raw;
+  return parsed.data ?? raw;
 };

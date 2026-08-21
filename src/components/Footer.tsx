@@ -1,7 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { getHero, getSocialLinks, type HeroData, type SocialLinkData } from "@/lib/api";
+import { usePortfolioData } from "@/context/DataContext";
 import { PLATFORM_ICONS } from "@/lib/constants";
 
 const NAV_ITEMS = [
@@ -12,13 +11,7 @@ const NAV_ITEMS = [
 ];
 
 export default function Footer() {
-  const [hero, setHero] = useState<HeroData | null>(null);
-  const [socialLinks, setSocialLinks] = useState<SocialLinkData[]>([]);
-
-  useEffect(() => {
-    getHero().then(setHero).catch(() => {});
-    getSocialLinks().then(setSocialLinks).catch((err) => console.error("Error loading socials:", err));
-  }, []);
+  const { hero, socialLinks } = usePortfolioData();
 
   const brandName = hero?.brandName || "Port";
 
@@ -26,10 +19,8 @@ export default function Footer() {
     <footer className="border-t border-[var(--color-border)] bg-[var(--color-bg)]">
       <div className="container-wide py-16 md:py-24">
         
-        {/* Footer Top */}
         <div className="grid md:grid-cols-12 gap-12 lg:gap-16 mb-16">
           
-          {/* Logo & Tagline */}
           <div className="md:col-span-5 flex flex-col gap-4">
             <a href="#hero" className="flex items-center gap-1.5 w-fit group">
               <span className="font-display text-xl font-bold uppercase text-[var(--color-text)] group-hover:text-[var(--color-accent)] transition-colors duration-200">
@@ -42,7 +33,6 @@ export default function Footer() {
             </p>
           </div>
 
-          {/* Links Column */}
           <div className="md:col-span-3 flex flex-col gap-4">
             <h4 className="text-[10px] font-mono text-[var(--color-text-muted)] uppercase tracking-widest">
               Navigation
@@ -60,7 +50,6 @@ export default function Footer() {
             </nav>
           </div>
 
-          {/* Socials Connection Column */}
           <div className="md:col-span-4 flex flex-col gap-4">
             <h4 className="text-[10px] font-mono text-[var(--color-text-muted)] uppercase tracking-widest">
               Social Links
@@ -95,7 +84,6 @@ export default function Footer() {
 
         </div>
 
-        {/* Footer Bottom */}
         <div className="pt-8 border-t border-[var(--color-border)] flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-xs text-[var(--color-text-muted)] font-mono uppercase tracking-wider">
             &copy; {new Date().getFullYear()} {brandName}. All rights reserved.

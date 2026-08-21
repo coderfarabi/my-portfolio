@@ -1,19 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import Image from "next/image";
 import { motion } from "framer-motion";
-import { getProjects, type ProjectData } from "@/lib/api";
+import { usePortfolioData } from "@/context/DataContext";
 
 export default function ProjectsSection() {
-  const [projects, setProjects] = useState<ProjectData[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    getProjects()
-      .then(setProjects)
-      .catch((err) => console.error("Error loading projects:", err))
-      .finally(() => setLoading(false));
-  }, []);
+  const { projects, loading } = usePortfolioData();
 
   if (loading) {
     return (
@@ -27,8 +19,11 @@ export default function ProjectsSection() {
 
   if (!projects.length) return null;
 
-  // Prioritize featured projects
-  const sorted = [...projects].sort((a, b) =>
+  const live = projects.filter((project) => project.demoUrl);
+
+  if (!live.length) return null;
+
+  const sorted = [...live].sort((a, b) =>
     a.isFeatured === b.isFeatured ? 0 : a.isFeatured ? -1 : 1
   );
 
@@ -49,7 +44,6 @@ export default function ProjectsSection() {
     <section id="projects" className="section-wrapper border-t border-[var(--color-border)] bg-[var(--color-bg)]">
       <div className="container-wide">
         
-        {/* Section Header */}
         <div className="mb-16 md:mb-24 flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div>
             <p className="section-label mb-4">Portfolio</p>
@@ -57,12 +51,11 @@ export default function ProjectsSection() {
               Featured <span className="text-[var(--color-accent)]">Works</span>
             </h2>
           </div>
-          <p className="text-[var(--color-text-secondary)] font-light max-w-sm leading-relaxed text-sm md:text-base">
+          <p className="text-[var(--color-text-secondary)] font-light max-w-sm leading-relaxed text-sm md:text-base min-h-[3rem]">
             A hand-picked selection of full-stack systems, tools, and UI engineering experiments.
           </p>
         </div>
 
-        {/* Projects Grid */}
         <motion.div
           variants={containerVariants}
           initial="hidden"
@@ -70,8 +63,7 @@ export default function ProjectsSection() {
           viewport={{ once: true, margin: "-50px" }}
           className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
         >
-          {sorted.map((project, index) => {
-            const num = String(index + 1).padStart(2, "0");
+          {sorted.map((project) => {
             return (
               <motion.div
                 key={project.id}
@@ -79,37 +71,38 @@ export default function ProjectsSection() {
                 className="card-base overflow-hidden flex flex-col justify-between group"
               >
                 <div>
-                  {/* Thumbnail / Visual */}
-                  {project.thumbnailUrl ? (
-                    <div className="aspect-[16/10] overflow-hidden bg-[var(--color-surface-2)] relative border-b border-[var(--color-border)]">
-                      <img
-                        src={project.thumbnailUrl}
-                        alt={project.title}
-                        className="size-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
-                        loading="lazy"
-                      />
-                      
-                      {project.isFeatured && (
-                        <div className="absolute top-4 right-4">
-                          <span className="tag text-[9px] bg-black/60 backdrop-blur-md">
-                            Featured
-                          </span>
-                        </div>
-                      )}
-                    </div>
-                  ) : (
-                    <div className="aspect-[16/10] bg-[var(--color-surface-2)] flex items-center justify-center border-b border-[var(--color-border)]">
-                      <span className="font-display text-4xl text-[var(--color-text-muted)] tracking-wider">
-                        {num}
-                      </span>
-                    </div>
-                  )}
+                  <div className="relative">
+                    {project.thumbnailUrl ? (
+                      <div className="aspect-[16/10] overflow-hidden bg-[var(--color-surface-2)] relative border-b border-[var(--color-border)]">
+                        <Image
+                          src={project.thumbnailUrl}
+                          alt={project.title}
+                          fill
+                          sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                          className="object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
+                        />
+                      </div>
+                    ) : (
+                      <div className="aspect-[16/10] bg-[var(--color-surface-2)] flex items-center justify-center border-b border-[var(--color-border)]">
+                        <span className="font-display text-4xl text-[var(--color-text-muted)] tracking-wider">
+                          {project.title.slice(0, 2).toUpperCase()}
+                        </span>
+                      </div>
+                    )}
 
-                  {/* Body Content */}
+                    {project.isFeatured && (
+                      <div className="absolute top-4 right-4">
+                        <span className="tag text-[9px] bg-black/60 backdrop-blur-md">
+                          Featured
+                        </span>
+                      </div>
+                    )}
+                  </div>
+
                   <div className="p-8">
                     <div className="flex items-center gap-2 mb-3">
                       <span className="text-[10px] font-mono text-[var(--color-accent)] uppercase tracking-widest">
-                        {project.category}
+                        {project.category || "Project"}
                       </span>
                     </div>
 
@@ -118,10 +111,9 @@ export default function ProjectsSection() {
                     </h3>
 
                     <p className="text-sm text-[var(--color-text-secondary)] mb-6 line-clamp-3 font-light leading-relaxed">
-                      {project.description}
+                      {project.description || "No description provided yet."}
                     </p>
 
-                    {/* Tag Badges */}
                     <div className="flex flex-wrap gap-1.5 mb-2">
                       {project.tags.slice(0, 3).map((tag) => (
                         <span key={tag} className="tag-neutral text-[9px] py-0.5 px-2">
@@ -132,7 +124,6 @@ export default function ProjectsSection() {
                   </div>
                 </div>
 
-                {/* Footer Metrics & CTAs */}
                 <div className="px-8 pb-8 pt-4 border-t border-[var(--color-border)] flex items-center justify-between">
                   <div className="flex items-center gap-4 text-xs font-mono text-[var(--color-text-muted)]">
                     {project.githubStats && (

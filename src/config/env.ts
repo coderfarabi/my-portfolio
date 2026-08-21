@@ -7,6 +7,7 @@ const envSchema = z.object({
 
   // GitHub GraphQL API
   GITHUB_PAT: z.string().min(1, "GITHUB_PAT is required for GitHub API integration"),
+  GITHUB_USERNAME: z.string().min(1, "GITHUB_USERNAME is required for GitHub API integration"),
 
   // Firebase Admin SDK (Dynamic data storage)
   FIREBASE_PROJECT_ID: z.string().min(1, "FIREBASE_PROJECT_ID is required for Firestore"),
@@ -20,6 +21,7 @@ const parseEnv = () => {
     NODE_ENV: process.env.NODE_ENV,
     PORT: process.env.PORT,
     GITHUB_PAT: process.env.GITHUB_PAT,
+    GITHUB_USERNAME: process.env.GITHUB_USERNAME,
     FIREBASE_PROJECT_ID: process.env.FIREBASE_PROJECT_ID,
     FIREBASE_CLIENT_EMAIL: process.env.FIREBASE_CLIENT_EMAIL,
     FIREBASE_PRIVATE_KEY: process.env.FIREBASE_PRIVATE_KEY,

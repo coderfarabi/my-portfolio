@@ -5,12 +5,15 @@ import type { Testimonial } from "./testimonials.types";
 export const getTestimonials = async (): Promise<Testimonial[]> => {
   const raw = await fetchTestimonials();
 
+  const valid: Testimonial[] = [];
   for (const item of raw) {
     const parsed = TestimonialSchema.safeParse(item);
-    if (!parsed.success) {
+    if (parsed.success) {
+      valid.push(parsed.data);
+    } else {
       console.error("Testimonial validation failed:", parsed.error.format());
     }
   }
 
-  return raw;
+  return valid;
 };

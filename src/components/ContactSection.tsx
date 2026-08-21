@@ -1,18 +1,14 @@
 "use client";
 
-import { useState, useEffect, type FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 import { motion } from "framer-motion";
-import { getContactInfo, type ContactInfoData } from "@/lib/api";
+import { usePortfolioData } from "@/context/DataContext";
 
 export default function ContactSection() {
-  const [contactInfo, setContactInfo] = useState<ContactInfoData | null>(null);
+  const { contactInfo } = usePortfolioData();
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
   const [error, setError] = useState("");
-
-  useEffect(() => {
-    getContactInfo().then(setContactInfo).catch((err) => console.error("Error loading contact info:", err));
-  }, []);
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -52,7 +48,6 @@ export default function ContactSection() {
     <section id="contact" className="section-wrapper border-t border-[var(--color-border)] bg-[var(--color-bg)]">
       <div className="container-wide">
         
-        {/* Section Header */}
         <div className="mb-16 md:mb-24 flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div>
             <p className="section-label mb-4">Inquiries</p>
@@ -65,10 +60,8 @@ export default function ContactSection() {
           </p>
         </div>
 
-        {/* Contact Layout */}
         <div className="grid md:grid-cols-2 gap-12 max-w-5xl mx-auto items-start">
           
-          {/* Contact Details Column */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -78,7 +71,6 @@ export default function ContactSection() {
           >
             {contactInfo && (
               <>
-                {/* Email Item */}
                 <div className="card-base p-6">
                   <span className="text-[var(--color-text-muted)] font-mono text-[10px] uppercase tracking-widest block mb-2">
                     Email Address
@@ -91,7 +83,6 @@ export default function ContactSection() {
                   </a>
                 </div>
 
-                {/* Phone Item */}
                 {contactInfo.phone && (
                   <div className="card-base p-6">
                     <span className="text-[var(--color-text-muted)] font-mono text-[10px] uppercase tracking-widest block mb-2">
@@ -103,7 +94,6 @@ export default function ContactSection() {
                   </div>
                 )}
 
-                {/* Location Item */}
                 <div className="card-base p-6">
                   <span className="text-[var(--color-text-muted)] font-mono text-[10px] uppercase tracking-widest block mb-2">
                     Location
@@ -112,32 +102,10 @@ export default function ContactSection() {
                     {contactInfo.location}
                   </span>
                 </div>
-
-                {/* Status Item */}
-                <div className="card-base p-6">
-                  <span className="text-[var(--color-text-muted)] font-mono text-[10px] uppercase tracking-widest block mb-2">
-                    Availability
-                  </span>
-                  <div className="flex items-center gap-2">
-                    <span
-                      className={`size-2 rounded-full ${
-                        contactInfo.availabilityStatus === "available"
-                          ? "bg-[var(--color-accent)] animate-pulse"
-                          : "bg-[var(--color-text-muted)]"
-                      }`}
-                    />
-                    <span className="text-sm font-mono uppercase tracking-wide text-[var(--color-text-secondary)]">
-                      {contactInfo.availabilityStatus === "available"
-                        ? "Available for work"
-                        : "Currently busy"}
-                    </span>
-                  </div>
-                </div>
               </>
             )}
           </motion.div>
 
-          {/* Form Column */}
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -169,7 +137,6 @@ export default function ContactSection() {
             ) : (
               <form onSubmit={handleSubmit} className="card-base p-8 flex flex-col gap-6">
                 
-                {/* Name */}
                 <div>
                   <label htmlFor="name" className="block text-xs font-mono text-[var(--color-text-secondary)] uppercase tracking-wider mb-2">
                     Name
@@ -184,7 +151,6 @@ export default function ContactSection() {
                   />
                 </div>
 
-                {/* Email */}
                 <div>
                   <label htmlFor="email" className="block text-xs font-mono text-[var(--color-text-secondary)] uppercase tracking-wider mb-2">
                     Email
@@ -199,7 +165,6 @@ export default function ContactSection() {
                   />
                 </div>
 
-                {/* Subject */}
                 <div>
                   <label htmlFor="subject" className="block text-xs font-mono text-[var(--color-text-secondary)] uppercase tracking-wider mb-2">
                     Subject
@@ -214,7 +179,6 @@ export default function ContactSection() {
                   />
                 </div>
 
-                {/* Message */}
                 <div>
                   <label htmlFor="message" className="block text-xs font-mono text-[var(--color-text-secondary)] uppercase tracking-wider mb-2">
                     Message

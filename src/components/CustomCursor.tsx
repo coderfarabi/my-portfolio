@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import { motion, useMotionValue, useSpring, AnimatePresence } from "framer-motion";
-import { getHero } from "@/lib/api";
+import { usePortfolioData } from "@/context/DataContext";
 
 interface Ripple {
   id: number;
@@ -16,6 +16,7 @@ function isTouchDevice(): boolean {
 }
 
 export default function CustomCursor() {
+  const { hero } = usePortfolioData();
   const [enabled, setEnabled] = useState(true);
   const [hovering, setHovering] = useState(false);
   const [visible, setVisible] = useState(true);
@@ -27,6 +28,10 @@ export default function CustomCursor() {
   const cursorY = useMotionValue(-200);
   const ringX = useSpring(cursorX, { stiffness: 150, damping: 20 });
   const ringY = useSpring(cursorY, { stiffness: 150, damping: 20 });
+
+  useEffect(() => {
+    if (hero && hero.cursorEnabled === false) setEnabled(false);
+  }, [hero]);
 
   const moveCursor = useCallback(
     (e: MouseEvent) => {
@@ -57,26 +62,22 @@ export default function CustomCursor() {
   }, []);
 
   useEffect(() => {
-    getHero()
-      .then((hero) => {
-        if (hero.cursorEnabled === false) setEnabled(false);
-      })
-      .catch(() => {});
-  }, []);
-
-  useEffect(() => {
     if (!enabled || isTouch) return;
     document.body.classList.add("cursor-hidden");
+
+    const onMouseLeave = () => setVisible(false);
+    const onMouseEnter = () => setVisible(true);
+
     window.addEventListener("mousemove", moveCursor);
     window.addEventListener("mouseover", onHover);
-    window.addEventListener("mouseleave", () => setVisible(false));
-    window.addEventListener("mouseenter", () => setVisible(true));
+    window.addEventListener("mouseleave", onMouseLeave);
+    window.addEventListener("mouseenter", onMouseEnter);
     return () => {
       document.body.classList.remove("cursor-hidden");
       window.removeEventListener("mousemove", moveCursor);
       window.removeEventListener("mouseover", onHover);
-      window.removeEventListener("mouseleave", () => setVisible(false));
-      window.removeEventListener("mouseenter", () => setVisible(true));
+      window.removeEventListener("mouseleave", onMouseLeave);
+      window.removeEventListener("mouseenter", onMouseEnter);
     };
   }, [enabled, isTouch, moveCursor, onHover]);
 

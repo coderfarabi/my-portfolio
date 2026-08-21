@@ -13,4 +13,16 @@ export const SkillSchema = z.object({
 
 export const SkillsListSchema = z.array(SkillSchema);
 
+export const ServiceItemSchema = z.object({
+  name: z.string().min(1, "Service name is required"),
+  description: z.string().optional(),
+});
+
+export const ServicesSchema = z.object({
+  id: z.string().optional(),
+  description: z.string().optional(),
+  services: z.array(ServiceItemSchema).optional(),
+});
+
 export type SkillInput = z.infer<typeof SkillSchema>;
+export type ServicesInput = z.infer<typeof ServicesSchema>;

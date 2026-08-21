@@ -1,18 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { getSocialLinks, type SocialLinkData } from "@/lib/api";
+import { usePortfolioData } from "@/context/DataContext";
 import { PLATFORM_ICONS } from "@/lib/constants";
 
 export default function SocialSidebar() {
-  const [socialLinks, setSocialLinks] = useState<SocialLinkData[]>([]);
-
-  useEffect(() => {
-    getSocialLinks()
-      .then(setSocialLinks)
-      .catch((err) => console.error("Error loading socials:", err));
-  }, []);
+  const { socialLinks } = usePortfolioData();
 
   if (socialLinks.length === 0) return null;
 

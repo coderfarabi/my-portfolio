@@ -12,7 +12,7 @@ export const getExperiences = async (): Promise<Experience[]> => {
   }
 
   // Double check sorting by order, fallback to sorting by start date descending if order is missing
-  return raw.sort((a, b) => {
+  return parsed.data!.sort((a, b) => {
     if (a.order !== undefined && b.order !== undefined) {
       return a.order - b.order;
     }

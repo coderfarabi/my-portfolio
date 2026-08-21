@@ -14,15 +14,22 @@ export interface HeroData {
   cursorEnabled?: boolean;
 }
 
+export interface AboutStat {
+  number?: string;
+  label: string;
+  value: string;
+  description?: string;
+}
+
 export interface AboutData {
-  name: string;
   tagline: string;
   bio: string;
   location: string;
   avatarUrl: string;
   resumeUrl?: string;
   yearsOfExperience: number;
-  openToWork: boolean;
+  showStats?: boolean;
+  stats?: AboutStat[];
 }
 
 export type SkillLevel = "beginner" | "intermediate" | "advanced" | "expert";
@@ -93,8 +100,28 @@ export interface ContactInfoData {
   email: string;
   phone?: string;
   location: string;
-  availabilityStatus: "available" | "busy" | "not-available";
   preferredContactMethod: "email" | "phone";
+}
+
+export interface TechnologyItemData {
+  name: string;
+  url?: string;
+}
+
+export interface ServiceItemData {
+  name: string;
+  description?: string;
+  technologies?: TechnologyItemData[];
+}
+
+export interface ServicesData {
+  id?: string;
+  description?: string;
+  services?: ServiceItemData[];
+}
+
+export function getServices() {
+  return fetchApi<ServicesData>("/api/skills?services=true");
 }
 
 export interface SocialLinkData {
@@ -185,8 +212,13 @@ export function getBlogPosts() {
   return fetchApi<BlogPostData[]>("/api/blog");
 }
 
+export interface SectionConfig {
+  order?: number;
+  enabled?: boolean;
+}
+
 export interface SectionsConfigData {
-  sections: Record<string, boolean>;
+  sections: Record<string, boolean | SectionConfig>;
 }
 
 export function getSectionsConfig() {

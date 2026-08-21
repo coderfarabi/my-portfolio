@@ -1,5 +1,7 @@
 import { fetchProjectsMetadata } from "./projects.repository";
+import { ProjectMetadataSchema } from "./projects.schema";
 import { getGitHubClient, REPO_DETAILS_QUERY, RepoDetailsQueryResult } from "@/lib/github";
+import { env } from "@/config/env";
 import { db } from "@/lib/firebase";
 import type { Project, ProjectMetadata } from "./projects.types";
 import type { RepositoryDetails } from "../github/github.types";
@@ -8,11 +10,20 @@ const SETTINGS_COLLECTION = "site-settings";
 const SETTINGS_DOC = "main";
 
 export const getProjects = async (): Promise<Project[]> => {
-  // 1. Fetch Projects Metadata
-  const metadata = await fetchProjectsMetadata();
+  // 1. Fetch and validate Projects Metadata
+  const rawMetadata = await fetchProjectsMetadata();
+  const metadata: ProjectMetadata[] = [];
+  for (const item of rawMetadata) {
+    const parsed = ProjectMetadataSchema.safeParse(item);
+    if (parsed.success) {
+      metadata.push(parsed.data as ProjectMetadata);
+    } else {
+      console.error("Project metadata validation failed:", parsed.error.format());
+    }
+  }
 
-  // 2. Fetch target GitHub username (fallback default owner)
-  let defaultOwner = "aarfan-sayeed";
+  // 2. Fetch target GitHub username (fallback from env)
+  let defaultOwner = env.GITHUB_USERNAME;
   try {
     const settings = await db().collection(SETTINGS_COLLECTION).doc(SETTINGS_DOC).get();
     if (settings.exists) {

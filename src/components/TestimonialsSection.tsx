@@ -1,19 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { getTestimonials, type TestimonialData } from "@/lib/api";
+import { usePortfolioData } from "@/context/DataContext";
 
 export default function TestimonialsSection() {
-  const [testimonials, setTestimonials] = useState<TestimonialData[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    getTestimonials()
-      .then(setTestimonials)
-      .catch(() => {})
-      .finally(() => setLoading(false));
-  }, []);
+  const { testimonials, loading } = usePortfolioData();
 
   if (loading) {
     return (

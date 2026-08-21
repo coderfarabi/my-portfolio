@@ -1,20 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { getFAQ, type FAQData } from "@/lib/api";
+import { usePortfolioData } from "@/context/DataContext";
 
 export default function FAQSection() {
-  const [faqs, setFaqs] = useState<FAQData[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { faq, loading } = usePortfolioData();
   const [openIndex, setOpenIndex] = useState<number | null>(null);
-
-  useEffect(() => {
-    getFAQ()
-      .then(setFaqs)
-      .catch(() => {})
-      .finally(() => setLoading(false));
-  }, []);
 
   const toggle = (index: number) => {
     setOpenIndex(openIndex === index ? null : index);
@@ -30,7 +22,7 @@ export default function FAQSection() {
     );
   }
 
-  if (!faqs.length) return null;
+  if (!faq.length) return null;
 
   return (
     <section className="py-28 sm:py-36">
@@ -49,9 +41,9 @@ export default function FAQSection() {
         </motion.div>
 
         <div className="max-w-3xl mx-auto space-y-3">
-          {faqs.map((faq, index) => (
+          {faq.map((item, index) => (
             <motion.div
-              key={faq.id || faq.question}
+              key={item.id || item.question}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-50px" }}
@@ -64,7 +56,7 @@ export default function FAQSection() {
                 aria-expanded={openIndex === index}
               >
                 <span className="font-display font-semibold text-sm sm:text-base pr-4">
-                  {faq.question}
+                  {item.question}
                 </span>
                 <svg
                   width="16"
@@ -92,7 +84,7 @@ export default function FAQSection() {
                     className="overflow-hidden"
                   >
                     <div className="px-5 pb-5 text-sm text-text-secondary leading-relaxed border-t border-border pt-4">
-                      {faq.answer}
+                      {item.answer}
                     </div>
                   </motion.div>
                 )}

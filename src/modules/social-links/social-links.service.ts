@@ -10,5 +10,5 @@ export const getSocialLinks = async (): Promise<SocialLink[]> => {
     console.error("Social links validation errors:", parsed.error.format());
   }
 
-  return raw;
+  return parsed.data!;
 };

@@ -8,3 +8,20 @@ export interface Skill {
   iconUrl?: string;
   order?: number;
 }
+
+export interface TechnologyItem {
+  name: string;
+  url?: string;
+}
+
+export interface ServiceItem {
+  name: string;
+  description?: string;
+  technologies?: TechnologyItem[];
+}
+
+export interface Services {
+  id?: string;
+  description?: string;
+  services?: ServiceItem[];
+}

@@ -11,5 +11,5 @@ export const getAbout = async (): Promise<About> => {
     console.error("About data validation failed:", parsed.error.format());
   }
 
-  return raw;
+  return parsed.data!;
 };

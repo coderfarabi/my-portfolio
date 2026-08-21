@@ -1,19 +1,19 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { getExperience, type ExperienceData } from "@/lib/api";
+import { usePortfolioData } from "@/context/DataContext";
+
+function formatDate(iso: string): string {
+  if (iso === "Present") return "Present";
+  const date = new Date(iso);
+  if (isNaN(date.getTime())) return iso;
+  return date.toLocaleDateString("en-US", {
+    year: "numeric",
+  });
+}
 
 export default function ExperienceSection() {
-  const [experience, setExperience] = useState<ExperienceData[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    getExperience()
-      .then(setExperience)
-      .catch((err) => console.error("Error loading experience:", err))
-      .finally(() => setLoading(false));
-  }, []);
+  const { experience, about, loading } = usePortfolioData();
 
   if (loading) {
     return (
@@ -25,13 +25,12 @@ export default function ExperienceSection() {
     );
   }
 
-  if (!experience.length) return null;
+  if (!experience.length && !about) return null;
 
   return (
     <section id="experience" className="section-wrapper border-t border-[var(--color-border)] bg-[var(--color-bg)]">
       <div className="container-wide">
         
-        {/* Section Header */}
         <div className="mb-16 md:mb-24 flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div>
             <p className="section-label mb-4">Journey</p>
@@ -39,12 +38,11 @@ export default function ExperienceSection() {
               Work <span className="text-[var(--color-accent)]">Experience</span>
             </h2>
           </div>
-          <p className="text-[var(--color-text-secondary)] font-light max-w-sm leading-relaxed text-sm md:text-base">
+          <p className="text-[var(--color-text-secondary)] font-light max-w-sm leading-relaxed text-sm md:text-base min-h-[3rem]">
             A history of key roles, architectural contributions, and systems built across organizations.
           </p>
         </div>
 
-        {/* Timeline List */}
         <div className="relative max-w-4xl mx-auto pl-6 md:pl-12 border-l border-[var(--color-border)] flex flex-col gap-16">
           {experience.map((exp, index) => (
             <motion.div
@@ -55,11 +53,9 @@ export default function ExperienceSection() {
               transition={{ duration: 0.5, delay: index * 0.08 }}
               className="relative"
             >
-              {/* Bullet on timeline */}
               <div className="absolute -left-[31px] md:-left-[55px] top-1.5 size-2 bg-[var(--color-accent)] border-4 border-[var(--color-bg)] outline outline-1 outline-[var(--color-border)] rounded-full z-10" />
 
               <div className="card-base p-8">
-                {/* Header: Role & Date */}
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
                   <div>
                     <span className="text-[var(--color-text-muted)] font-mono text-xs uppercase tracking-widest block mb-1">
@@ -82,7 +78,6 @@ export default function ExperienceSection() {
                   </div>
                 </div>
 
-                {/* Company Name */}
                 <div className="mb-6 flex items-center gap-2">
                   {exp.companyUrl ? (
                     <a
@@ -101,7 +96,6 @@ export default function ExperienceSection() {
                   <span className="text-[var(--color-text-muted)] text-xs">&middot; {exp.location}</span>
                 </div>
 
-                {/* Details */}
                 <ul className="flex flex-col gap-3 mb-6">
                   {exp.description.map((point, i) => (
                     <li
@@ -114,7 +108,6 @@ export default function ExperienceSection() {
                   ))}
                 </ul>
 
-                {/* Tech Pills */}
                 <div className="flex flex-wrap gap-1.5 pt-4 border-t border-[var(--color-border)]">
                   {exp.technologies.map((tech) => (
                     <span key={tech} className="tag-neutral text-[10px]">
@@ -130,12 +123,4 @@ export default function ExperienceSection() {
       </div>
     </section>
   );
-}
-
-function formatDate(iso: string): string {
-  const date = new Date(iso);
-  return date.toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "short",
-  });
 }

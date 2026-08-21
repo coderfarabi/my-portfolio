@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { getHero, getAbout, type HeroData, type AboutData } from "@/lib/api";
+import { usePortfolioData } from "@/context/DataContext";
 
 const NAV_ITEMS = [
   { label: "Home", href: "#hero" },
@@ -13,17 +14,11 @@ const NAV_ITEMS = [
 ];
 
 export default function Header() {
+  const { hero, about } = usePortfolioData();
   const [scrolled, setScrolled] = useState(false);
   const [hidden, setHidden] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [hero, setHero] = useState<HeroData | null>(null);
-  const [about, setAbout] = useState<AboutData | null>(null);
   const prevScroll = useRef(0);
-
-  useEffect(() => {
-    getHero().then(setHero).catch(() => {});
-    getAbout().then(setAbout).catch(() => {});
-  }, []);
 
   useEffect(() => {
     const onScroll = () => {
@@ -42,7 +37,6 @@ export default function Header() {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50">
-      {/* Glass background layer with punch-hole cutouts */}
       <div className={`absolute inset-0 ${scrolled ? "rounded-b-[20px] overflow-hidden" : ""}`}>
         <div
           className={`absolute inset-0 transition-all duration-300 ${
@@ -53,14 +47,15 @@ export default function Header() {
         />
       </div>
 
-      {/* Content layer */}
       <div className="relative z-20 mx-auto max-w-6xl px-6 flex items-center justify-between h-16 md:h-20">
         <a href="#hero" className="flex items-center gap-3 group">
           <div className="profile-punch size-9 md:size-10 rounded-full overflow-hidden border-2 border-[var(--color-border)] bg-[var(--color-surface)] shrink-0 transition-all duration-300 group-hover:border-[var(--color-accent)]">
             {about?.avatarUrl ? (
-              <img
+              <Image
                 src={about.avatarUrl}
-                alt={about.name}
+                alt={hero?.name || "Profile"}
+                width={40}
+                height={40}
                 className="size-full object-cover transition-all duration-500"
               />
             ) : (
@@ -107,6 +102,7 @@ export default function Header() {
           className="md:hidden flex flex-col gap-1.5 p-2 relative z-50"
           onClick={() => setMobileOpen(!mobileOpen)}
           aria-label="Toggle menu"
+          aria-expanded={mobileOpen}
         >
           <span
             className={`block h-0.5 w-5 bg-text transition-transform duration-300 ${

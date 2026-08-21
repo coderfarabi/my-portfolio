@@ -8,7 +8,7 @@ export const EducationSchema = z.object({
   fieldOfStudy: z.string().min(1, "Field of study is required"),
   location: z.string().min(1, "Location is required"),
   startDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Start date must be in YYYY-MM-DD format"),
-  endDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "End date must be in YYYY-MM-DD format").optional(),
+  endDate: z.string().regex(/^(?:\d{4}-\d{2}-\d{2}|Present)$/, "End date must be in YYYY-MM-DD format or 'Present'").optional(),
   isCurrent: z.boolean(),
   grade: z.string().optional(),
   activities: z.array(z.string()).optional().default([]),

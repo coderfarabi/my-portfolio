@@ -1,15 +1,20 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { getAbout, type AboutData } from "@/lib/api";
+import { usePortfolioData } from "@/context/DataContext";
 
 export default function AboutSection() {
-  const [about, setAbout] = useState<AboutData | null>(null);
+  const { about, loading } = usePortfolioData();
 
-  useEffect(() => {
-    getAbout().then(setAbout).catch((err) => console.error("Error loading about:", err));
-  }, []);
+  if (loading) {
+    return (
+      <section id="about" className="section-wrapper bg-[var(--color-bg)]">
+        <div className="container-wide text-center">
+          <div className="size-8 border-2 border-[var(--color-accent)] border-t-transparent rounded-full animate-spin mx-auto" />
+        </div>
+      </section>
+    );
+  }
 
   if (!about) return null;
 
@@ -17,7 +22,6 @@ export default function AboutSection() {
     <section id="about" className="section-wrapper border-t border-[var(--color-border)] bg-[var(--color-bg)]">
       <div className="container-wide">
         
-        {/* Section Header */}
         <div className="mb-16 md:mb-24">
           <p className="section-label mb-4">Biography</p>
           <h2 className="display-lg">
@@ -27,8 +31,7 @@ export default function AboutSection() {
 
         <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-start">
           
-          {/* Bio text column */}
-          <div className="lg:col-span-7 flex flex-col gap-6">
+          <div className="lg:col-span-12 max-w-3xl flex flex-col gap-6">
             <h3 className="text-2xl md:text-3xl font-display font-bold text-[var(--color-text)] leading-snug">
               {about.tagline}
             </h3>
@@ -62,57 +65,34 @@ export default function AboutSection() {
             </div>
           </div>
 
-          {/* Stats column */}
-          <div className="lg:col-span-5 grid grid-cols-1 gap-px bg-[var(--color-border)] rounded-2xl overflow-hidden border border-[var(--color-border)]">
-            
-            {/* Stat Item 1 */}
-            <div className="bg-[var(--color-surface)] p-8 flex flex-col justify-between min-h-[140px]">
-              <span className="text-[var(--color-text-muted)] font-mono text-xs uppercase tracking-widest">
-                01 / Experience
-              </span>
-              <div className="flex items-baseline gap-2 mt-4">
-                <span className="text-5xl md:text-6xl font-display font-bold text-[var(--color-accent)]">
-                  {about.yearsOfExperience}+
-                </span>
-                <span className="text-[var(--color-text-secondary)] text-sm">
-                  Years working in the industry
-                </span>
-              </div>
-            </div>
-
-            {/* Stat Item 2 */}
-            <div className="bg-[var(--color-surface)] p-8 flex flex-col justify-between min-h-[140px]">
-              <span className="text-[var(--color-text-muted)] font-mono text-xs uppercase tracking-widest">
-                02 / Delivery
-              </span>
-              <div className="flex items-baseline gap-2 mt-4">
-                <span className="text-5xl md:text-6xl font-display font-bold text-[var(--color-accent)]">
-                  50+
-                </span>
-                <span className="text-[var(--color-text-secondary)] text-sm">
-                  Projects completed successfully
-                </span>
-              </div>
-            </div>
-
-            {/* Stat Item 3 */}
-            <div className="bg-[var(--color-surface)] p-8 flex flex-col justify-between min-h-[140px]">
-              <span className="text-[var(--color-text-muted)] font-mono text-xs uppercase tracking-widest">
-                03 / Clients
-              </span>
-              <div className="flex items-baseline gap-2 mt-4">
-                <span className="text-5xl md:text-6xl font-display font-bold text-[var(--color-accent)]">
-                  10+
-                </span>
-                <span className="text-[var(--color-text-secondary)] text-sm">
-                  Global collaborative clients
-                </span>
-              </div>
-            </div>
-
-          </div>
-
         </div>
+
+        {about.showStats !== false && about.stats && about.stats.length > 0 && (
+          <div className="mt-16 grid grid-cols-1 gap-px bg-[var(--color-border)] rounded-2xl overflow-hidden border border-[var(--color-border)] max-w-4xl mx-auto">
+            {about.stats.map((stat) => (
+              <div
+                key={stat.number ?? stat.label}
+                className="bg-[var(--color-surface)] p-8 flex flex-col justify-between min-h-[140px]"
+              >
+                <span className="text-[var(--color-text-muted)] font-mono text-xs uppercase tracking-widest">
+                  {stat.number ? `${stat.number} / ` : ""}{stat.label}
+                </span>
+                <div className="flex items-baseline gap-2 mt-4 flex-wrap">
+                  <span
+                    className={`font-display font-bold text-[var(--color-accent)] uppercase ${stat.value.length <= 4 ? "text-5xl md:text-6xl" : "text-3xl md:text-4xl"}`}
+                  >
+                    {stat.value}
+                  </span>
+                  {stat.description && (
+                    <span className="text-[var(--color-text-secondary)] text-xs">
+                      {stat.description}
+                    </span>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
 
       </div>
     </section>

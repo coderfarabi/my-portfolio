@@ -5,7 +5,6 @@ export const ContactInfoSchema = z.object({
   email: z.string().email("Must be a valid email address"),
   phone: z.string().optional(),
   location: z.string().min(1, "Location is required"),
-  availabilityStatus: z.enum(["available", "busy", "not-available"]),
   preferredContactMethod: z.enum(["email", "phone"]),
 });
 

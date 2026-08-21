@@ -11,5 +11,5 @@ export const getHero = async (): Promise<Hero> => {
     console.error("Hero validation failed:", parsed.error.format());
   }
 
-  return raw;
+  return parsed.data!;
 };

@@ -1,6 +1,6 @@
-import { fetchSkills } from "./skills.repository";
-import { SkillsListSchema } from "./skills.schema";
-import type { Skill } from "./skills.types";
+import { fetchSkills, fetchServices } from "./skills.repository";
+import { SkillsListSchema, ServicesSchema } from "./skills.schema";
+import type { Skill, Services } from "./skills.types";
 
 export const getSkills = async (): Promise<Skill[]> => {
   const raw = await fetchSkills();
@@ -11,7 +11,19 @@ export const getSkills = async (): Promise<Skill[]> => {
     console.error("Skills data validation errors:", parsed.error.format());
   }
 
-  return raw;
+  return parsed.data! as Skill[];
+};
+
+export const getServices = async (): Promise<Services> => {
+  const raw = await fetchServices();
+
+  // Validate the Firestore document against the schema before returning
+  const parsed = ServicesSchema.safeParse(raw);
+  if (!parsed.success) {
+    console.error("Services data validation errors:", parsed.error.format());
+  }
+
+  return parsed.data! as Services;
 };
 
 export const getSkillsByCategory = async (): Promise<Record<string, Skill[]>> => {

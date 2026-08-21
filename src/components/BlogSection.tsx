@@ -1,19 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { getBlogPosts, type BlogPostData } from "@/lib/api";
+import { usePortfolioData } from "@/context/DataContext";
 
 export default function BlogSection() {
-  const [posts, setPosts] = useState<BlogPostData[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    getBlogPosts()
-      .then(setPosts)
-      .catch(() => {})
-      .finally(() => setLoading(false));
-  }, []);
+  const { blog, loading } = usePortfolioData();
 
   if (loading) {
     return (
@@ -25,7 +16,7 @@ export default function BlogSection() {
     );
   }
 
-  if (!posts.length) return null;
+  if (!blog.length) return null;
 
   return (
     <section className="py-28 sm:py-36 bg-surface/50">
@@ -44,7 +35,7 @@ export default function BlogSection() {
         </motion.div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
-          {posts.map((post, index) => (
+          {blog.map((post, index) => (
             <motion.article
               key={post.id || post.slug}
               initial={{ opacity: 0, y: 30 }}

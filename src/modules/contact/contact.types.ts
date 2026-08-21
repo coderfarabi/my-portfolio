@@ -3,7 +3,6 @@ export interface ContactInfo {
   email: string;
   phone?: string;
   location: string;
-  availabilityStatus: "available" | "busy" | "not-available";
   preferredContactMethod: "email" | "phone";
 }
 

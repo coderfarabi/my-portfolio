@@ -1,12 +1,19 @@
+export interface AboutStat {
+  number?: string;
+  label: string;
+  value: string;
+  description?: string;
+}
+
 export interface About {
   id?: string;
-  name: string;
   tagline: string;
   bio: string;
   location: string;
   avatarUrl: string;
   resumeUrl?: string;
   yearsOfExperience: number;
-  openToWork: boolean;
+  showStats?: boolean;
   updatedAt?: string;
+  stats?: AboutStat[];
 }
