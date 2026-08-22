@@ -105,11 +105,13 @@ export default function EducationSection() {
 
                 {edu.activities && edu.activities.length > 0 && (
                   <div className="flex flex-wrap gap-1.5 pt-4 border-t border-[var(--color-border)]">
-                    {edu.activities.map((act) => (
-                      <span key={act} className="tag-neutral text-[10px]">
-                        {act}
-                      </span>
-                    ))}
+                    {edu.activities
+                      .filter((act, i, arr) => act.trim() && arr.indexOf(act) === i)
+                      .map((act, i) => (
+                        <span key={`${i}-${act}`} className="tag-neutral text-[10px]">
+                          {act}
+                        </span>
+                      ))}
                   </div>
                 )}
               </motion.div>
