@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { usePortfolioData } from "@/context/DataContext";
+import ThemeToggle from "./ThemeToggle";
 
 const NAV_ITEMS = [
   { label: "Home", href: "#hero" },
@@ -90,6 +91,7 @@ export default function Header() {
           transition={{ duration: 0.25, ease: "easeInOut" }}
           className="hidden md:flex items-center gap-4"
         >
+          <ThemeToggle />
           <a
             href="#contact"
             className="px-5 py-2.5 bg-accent text-bg text-sm font-medium rounded-xl hover:bg-accent-hover transition-all duration-200 hover:shadow-lg hover:shadow-accent/20"
@@ -141,13 +143,16 @@ export default function Header() {
                 {item.label}
               </a>
             ))}
-            <a
-              href="#contact"
-              className="inline-flex items-center justify-center px-5 py-2.5 bg-accent text-bg text-sm font-medium rounded-xl hover:bg-accent-hover transition-colors mt-2"
-              onClick={() => setMobileOpen(false)}
-            >
-              Let&apos;s Talk
-            </a>
+            <div className="flex items-center justify-between gap-4 mt-2">
+              <ThemeToggle />
+              <a
+                href="#contact"
+                className="inline-flex items-center justify-center px-5 py-2.5 bg-accent text-bg text-sm font-medium rounded-xl hover:bg-accent-hover transition-colors"
+                onClick={() => setMobileOpen(false)}
+              >
+                Let&apos;s Talk
+              </a>
+            </div>
           </motion.nav>
         )}
       </AnimatePresence>

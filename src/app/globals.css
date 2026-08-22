@@ -1,26 +1,26 @@
 @import "tailwindcss";
 
 @theme {
-  /* === Portavia Color Palette === */
-  --color-bg: #0f0f0f;
-  --color-surface: #1a1a1b;
-  --color-surface-2: #222224;
-  --color-surface-hover: #242426;
-  --color-border: #2a2a2a;
-  --color-border-light: #3a3a3a;
+  /* === Portavia Color Palette — Light (default) === */
+  --color-bg: #fcfcfd;
+  --color-surface: #f7f7f8;
+  --color-surface-2: #ededf0;
+  --color-surface-hover: #f0f7db;
+  --color-border: #d0d0d5;
+  --color-border-light: #e4e4e7;
 
-  --color-text: #ffffff;
-  --color-text-secondary: #b5b5b5;
-  --color-text-muted: #8f8f8f;
+  --color-text: #0f0f0f;
+  --color-text-secondary: #4a4a4a;
+  --color-text-muted: #71717a;
 
-  /* Portavia signature lime-green accent */
-  --color-accent: #d0ff71;
-  --color-accent-hover: #c5f55a;
-  --color-accent-dim: #a8d455;
-  --color-accent-glow: color-mix(in srgb, #d0ff71 20%, transparent);
+  /* Accessible text-safe green accent for light surfaces */
+  --color-accent: #5b8a00;
+  --color-accent-hover: #4c7500;
+  --color-accent-dim: #eef5cf;
+  --color-accent-glow: rgba(91, 138, 0, 0.08);
 
-  --color-success: #4ade80;
-  --color-error: #f87171;
+  --color-success: #16a34a;
+  --color-error: #dc2626;
 
   /* === Typography === */
   --font-display: 'Antonio', sans-serif;
@@ -30,6 +30,31 @@
   /* === Spacing === */
   --section-padding: 7rem;
   --container-max: 1200px;
+}
+
+/* ============================================
+   DARK THEME
+   ============================================ */
+[data-theme="dark"] {
+  --color-bg: #0f0f0f;
+  --color-surface: #1a1a1b;
+  --color-surface-2: #222224;
+  --color-surface-hover: #242426;
+  --color-border: #2a2a2a;
+  --color-border-light: #3a3a3a;
+
+  --color-text: #ffffff;
+  --color-text-secondary: #e0e0e0;
+  --color-text-muted: #a0a0a0;
+
+  /* Electric neon lime accent */
+  --color-accent: #d0ff71;
+  --color-accent-hover: #c5f55a;
+  --color-accent-dim: #a8d455;
+  --color-accent-glow: rgba(208, 255, 113, 0.18);
+
+  --color-success: #4ade80;
+  --color-error: #f87171;
 }
 
 /* ============================================

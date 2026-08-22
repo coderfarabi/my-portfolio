@@ -47,7 +47,7 @@ export default function HeroSection() {
       id="hero"
       className="relative min-h-screen flex flex-col justify-between overflow-hidden pt-24 md:pt-32 pb-12 bg-[var(--color-bg)]"
     >
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(208,255,113,0.07),transparent)] pointer-events-none" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,var(--color-accent-glow),transparent)] pointer-events-none" />
       <div className="absolute top-1/4 left-10 size-[300px] bg-[var(--color-accent)]/2 rounded-full blur-3xl pointer-events-none" />
 
       <div className="relative z-10 mx-auto max-w-6xl px-6 w-full my-auto">

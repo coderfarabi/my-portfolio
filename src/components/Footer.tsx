@@ -42,7 +42,7 @@ export default function Footer() {
                 <a
                   key={item.href}
                   href={item.href}
-                  className="text-sm text-[var(--color-text-secondary)] hover:text-white transition-colors w-fit font-light"
+                  className="text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-text)] transition-colors w-fit font-light"
                 >
                   {item.label}
                 </a>
@@ -61,7 +61,7 @@ export default function Footer() {
                   href={link.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="size-9 rounded-full bg-[var(--color-surface-2)] border border-[var(--color-border)] flex items-center justify-center text-[var(--color-text-secondary)] hover:text-black hover:bg-[var(--color-accent)] hover:border-[var(--color-accent)] transition-all duration-200"
+                  className="size-9 rounded-full bg-[var(--color-surface-2)] border border-[var(--color-border)] flex items-center justify-center text-[var(--color-text-secondary)] hover:text-[var(--color-bg)] hover:bg-[var(--color-accent)] hover:border-[var(--color-accent)] transition-all duration-200"
                   aria-label={link.label}
                 >
                   <svg

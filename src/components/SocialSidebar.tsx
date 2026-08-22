@@ -39,7 +39,7 @@ export default function SocialSidebar() {
               href={link.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="relative size-10 rounded-full bg-[var(--color-surface-2)] border border-[var(--color-border)] flex items-center justify-center text-[var(--color-text-secondary)] hover:text-black hover:bg-[var(--color-accent)] hover:border-[var(--color-accent)] transition-all duration-200"
+              className="relative size-10 rounded-full bg-[var(--color-surface-2)] border border-[var(--color-border)] flex items-center justify-center text-[var(--color-text-secondary)] hover:text-[var(--color-bg)] hover:bg-[var(--color-accent)] hover:border-[var(--color-accent)] transition-all duration-200"
               aria-label={link.label}
             >
               <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
@@ -69,7 +69,7 @@ export default function SocialSidebar() {
               href={link.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="size-9 shrink-0 rounded-full bg-[var(--color-surface-2)] border border-[var(--color-border)] flex items-center justify-center text-[var(--color-text-secondary)] hover:text-black hover:bg-[var(--color-accent)] hover:border-[var(--color-accent)] transition-all duration-200"
+              className="size-9 shrink-0 rounded-full bg-[var(--color-surface-2)] border border-[var(--color-border)] flex items-center justify-center text-[var(--color-text-secondary)] hover:text-[var(--color-bg)] hover:bg-[var(--color-accent)] hover:border-[var(--color-accent)] transition-all duration-200"
               aria-label={link.label}
             >
               <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
